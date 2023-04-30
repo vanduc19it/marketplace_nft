@@ -1,0 +1,39 @@
+
+.heading {
+  font-size: 66px;
+  margin-bottom: 10px;
+}
+.btn {
+  margin-right: 20px ;
+  margin-top: 40px;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 60px 90px;
+    padding-bottom:20px ;
+  }
+  .card {
+    border: 1px solid black;
+    padding: 20px;
+    border-radius: 0px;
+  }
+  .card_body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0px;
+  }
+  
+  .price {
+    margin: 15px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .info {
+    display: flex;
+    align-items: center;
+  }
+  

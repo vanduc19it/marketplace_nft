@@ -1,0 +1,28 @@
+
+.heading {
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  margin:  20px 28px;
+  font-size: 26px;
+}
+.container {
+    display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-gap: 26px; 
+  margin: 0 28px;
+  }
+  .card {
+    width: 320px;
+    height: 110px;
+    padding: 20px;
+    border-radius: 0px;
+    display: flex;
+    align-items: center;
+  }
+  .card_body {
+    margin: 15px 10px;
+
+  }
+
+  
