@@ -1,0 +1,39 @@
+/* variables.module.scss */
+
+.detail {
+    display: flex;
+}
+.heading {
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom:  20px;
+    font-size: 26px;
+    margin-left: 28px;
+
+  }
+  .container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 26px; 
+    margin: 0 28px;
+  }
+  .card {
+    width: 310px;
+    height: 420px;
+    padding: 20px;
+    border-radius: 0px;
+  }
+  .card_body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 10px;
+  }
+  .price {
+    margin: 15px 10px;
+  }
+  
+  
+  
+  

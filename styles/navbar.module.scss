@@ -24,3 +24,28 @@
 .search {
     width: 500px;
 }
+.connect {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 20px 0px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+.connect:hover {
+    box-shadow: 0 0 10px rgba(12, 12, 12, 0.2);
+    cursor: pointer;
+}
+.wallet {
+    display: flex;
+    align-items: center;
+    
+}
+.btn {
+    border-radius: 40px;
+}
+.wallet_name {
+    font-weight: 700;
+}
