@@ -1,15 +1,31 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import { Button, FormControl, FormHelperText, FormLabel, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea } from '@chakra-ui/react'
+import { Button, Card, FormControl, FormHelperText, FormLabel, Image, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import {ethers, providers} from 'ethers'
 import { NFTStorage, File } from 'nft.storage';
 declare var window: any;
-
+import styles from '../styles/createNFT.module.scss'
 import MarketplaceAbi from './datasmc/abi/marketplaceAbi.json';
 import MarketplaceAddress from './datasmc/address/marketplaceAddress.json';
 import NFTAbi from './datasmc/abi/nftAbi.json';
 import NFTAddress from './datasmc/address/nftAddress.json';
+import { FaRegHeart } from 'react-icons/fa'
+// import ipfsClient from 'ipfs-http-client';
+// import { Buffer } from 'buffer';
+// const projectId = '4cd2c1a8018646908347fb2223053b30';
+// const projectSecret = '8f714e35d70742d78cab98b27a934f4f';
+// const auth =
+//     'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+
+// const client = ipfsClient.create({
+//     host: 'ipfs.infura.io',
+//     port: 5001,
+//     protocol: 'https',
+//     headers: {
+//         authorization: auth,
+//     },
+// });
 
 
 const createNewNFT = () => {
@@ -43,6 +59,16 @@ const createNewNFT = () => {
 			// sử dụng buffer ở đây
 			setImageBuffer(reader.result);
 		};
+
+		// if (typeof file !== 'undefined') {
+		// 	try {
+		// 	  const result = await client.add(file)
+		// 	  console.log(result)
+		// 	  setImage(`https://ipfs.infura.io/ipfs/${result.path}`)
+		// 	} catch (error){
+		// 	  console.log("ipfs image upload error: ", error)
+		// 	}
+		//   }
 	};
   console.log(imageBuffer)
 
@@ -70,97 +96,89 @@ const createNewNFT = () => {
 			const ipfsURL = `https://ipfs.io/ipfs/${ipnft}/metadata.json`;
 			console.log(ipfsURL);
 
+
+
+			// const result = await client.add(JSON.stringify({image, price, name, description}))
+			// const uri = `https://ipfs.infura.io/ipfs/${result.path}`
+
 			// mint nft
 			await (await nft.mint(ipfsURL)).wait();
 			console.log(nft);
 			// get tokenId of new nft
 			const id = await nft.tokenCount();
 			// approve marketplace to spend nft
-      const idToken = parseInt(id._hex, 16)
+      		const idToken = parseInt(id._hex, 16)
      
+			console.log(id,idToken)
+			// await (await nft.setApprovalForAll(marketplace.address, true)).wait();
+			// // add nft to marketplace
 
-			await (await nft.setApprovalForAll(marketplace.address, true)).wait();
-			// add nft to marketplace
-
-			// sử dụng biến price ở đây
-			const listingPrice = ethers.utils.parseEther(price.toString());
-			await (await marketplace.makeItem(nft.address, idToken, listingPrice)).wait();
+			// // sử dụng biến price ở đây
+			// const listingPrice = ethers.utils.parseEther(price.toString());
+			// await (await marketplace.makeItem(nft.address, idToken, listingPrice)).wait();
 		}
 	};
 
-  
-	useEffect(() => {
-		loadMarketplaceItems();
-	}, []);
 
-	const [items, setItems] = useState([]);
-	const loadMarketplaceItems = async () => {
-		// Load all unsold items
-		if (marketplace !== undefined) {
-			const itemCount = await marketplace.itemCount();
-			let items: any = [];
-			for (let i = 1; i <= itemCount; i++) {
-				const item = await marketplace.items(i);
-			
-				if (!item.sold) {
-					// get uri url from nft contract
-					const uri = await nft.tokenURI(item.tokenId);
-					// use uri to fetch the nft metadata stored on ipfs
-					const response = await fetch(uri);
-
-					const metadata = await response.json();
-					// get total price of item (item price + fee)
-					const totalPrice = await marketplace.getTotalPrice(item.itemId);
-					// Add item to items array
-					items.push({
-						totalPrice,
-						itemId: item.itemId,
-						seller: item.seller,
-						name: metadata.name,
-						description: metadata.description,
-						image: metadata.image,
-					});
-				}
-			}
-			setItems(items);
-		}
-	};
-	console.log(items);
   return (
     <>
-        <Navbar/>
-        <div>
-            <Text>Create Your NFT</Text>
-            <Text>Upload File</Text>
+		<div style={{margin:"-20px -80px 20px", borderBottom:"1px solid #eee", paddingBottom:"20px"}} >
+			 <Navbar/>
+		</div>
+		<div style={{display:"flex", justifyContent:"space-around", alignItems:"center", marginBottom:"20px"}}>
+		<div style={{width:"60vw"}}>
+            <Text style={{fontSize:"28px", fontWeight:"600", margin:"20px 0px"}}>Create Your NFT</Text>
+            <Text style={{fontWeight:"600", margin:"10px 0px"}}>Upload Image</Text>
                         <FormControl>
            
             <Input type='file'  onChange={uploadToIPFS}/>
 
-            <FormLabel>Item Name</FormLabel>
-            <Input type='text' onChange={(e: any) => setName(e.target.value)}/>
-            <FormLabel>Description</FormLabel>
-            <Textarea placeholder='Here is a sample placeholder' onChange={(e: any) => setDescription(e.target.value)}/>
-            <FormLabel>Price</FormLabel>
-                        <NumberInput max={10} min={0} onChange={(e: any) => setPrice(e)}>
+            <FormLabel style={{fontWeight:"600", margin:"10px 0px"}}>Item Name</FormLabel>
+            <Input type='text' onChange={(e: any) => setName(e.target.value)} placeholder='NFT name'/>
+            <FormLabel style={{fontWeight:"600",margin:"10px 0px"}}>Description</FormLabel>
+            <Textarea placeholder='Provide description for your NFT ' onChange={(e: any) => setDescription(e.target.value)}/>
+            <FormLabel style={{fontWeight:"600",margin:"10px 0px"}}>Price</FormLabel>
+            <NumberInput max={10} min={0} onChange={(e: any) => setPrice(e)}>
                 <NumberInputField />
                 <NumberInputStepper>
                 <NumberIncrementStepper />
                 <NumberDecrementStepper />
                 </NumberInputStepper>
             </NumberInput>
-            <FormHelperText>We'll never share your email.</FormHelperText>
+           
 
             <Button
-            mt={4}
+            mt={8}
             colorScheme='teal'
             // isLoading={props.isSubmitting}
             type='submit'
             onClick={createNFT}
           >
-            Submit
+            Create New NFT
           </Button>
             </FormControl>
         </div>
+		<div>
+		<Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
+			<div style={{background:"#000", borderRadius:"20px", display:"flex", justifyContent:"center",margin:"0 10px", height:"320px"}}>
+			<Image src={imageBuffer ? URL.createObjectURL(new Blob([imageBuffer])) : "/image/preview.png"} alt="" style={{backgroundSize:"contain"}}/>
+			</div>
+         
+          <div className={styles.card_body}>
+            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> {name == '' ? "NFT Name" : name}</Text>
+            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
+            
+          </div>
+          <hr style={{borderColor:"#eee"}}/>
+          <div className={styles.price}>
+            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Price</Text>
+            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>{price} ETH</Text>
+          </div>
+            
+        </Card>
+		</div>
+		</div>
+       
         <Footer/>
     </>
   )
