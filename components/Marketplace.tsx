@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import {Poppins} from 'next/font/google'
 import styles from '../styles/marketplace.module.scss'
 import { Button, Card, Image, Text } from '@chakra-ui/react'
-import logo from "../assets/NFT/2.jpg"
-import { FiHeart } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa";
 import {ethers} from 'ethers'
 import { BsCart4 } from "react-icons/bs";
-
+import { ImPriceTags } from "react-icons/im";
+import { AiFillDollarCircle, AiOutlineEye } from 'react-icons/ai'
 import MarketplaceAbi from '../pages/datasmc/abi/marketplaceAbi.json';
 import MarketplaceAddress from '../pages/datasmc/address/marketplaceAddress.json';
 import NFTAbi from '../pages/datasmc/abi/nftAbi.json';
 import NFTAddress from '../pages/datasmc/address/nftAddress.json';
-import { id } from 'ethers/lib/utils'
+import Link from 'next/link';
+import { BiCategory } from 'react-icons/bi';
+
 declare var window: any;
 const Marketplace = () => {
-
- 
-
 
   useEffect(() => {
     loadMarketplaceItems();
@@ -25,18 +22,36 @@ const Marketplace = () => {
   
   const [nfts, setNFTs] = useState([]);
   const loadMarketplaceItems = async () => {
-    const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-  
-      const signer: any = provider.getSigner();
+
+    if(typeof window !== "undefined") {
+    // const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+    // await provider.send('eth_requestAccounts', []); 
+    // // await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //   const signer: any = provider.getSigner();
      // Get deployed copies of contracts
-     var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer)
-   
-   
-     
-     const nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer)
-  
-  
-  
+    //  var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer)
+    //   console.log(marketplace, "abc")
+
+
+
+     const provider1 = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30");
+
+     const nft = new ethers.Contract(NFTAddress.address, NFTAbi, provider1)
+     const marketplace = new ethers.Contract( MarketplaceAddress.address, MarketplaceAbi, provider1);
+
+    //  console.log(contract, "contratc")
+    console.log(nft)
+    if (nft !== undefined) {
+      // const tokenCount = await nft.itemCount();
+      // console.log(tokenCount, "token111")
+    }
+    
+    // //   console.log(contract, "contarc")
+    //   if (contract !== undefined) {
+    //     const tokenCount = await contract.itemCount();
+    //     console.log(tokenCount, "token")
+    //   }
+    
    
     // Load all unsold items
     if (marketplace !== undefined) {
@@ -67,11 +82,14 @@ const Marketplace = () => {
       }
       setNFTs(items);
     }
+  }
   };
   console.log(nfts);
 
   
 const handleBuyNFT = async (item:any) => {
+  // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
   const provider: any = new ethers.providers.Web3Provider(window.ethereum);
 
   const signer: any = provider.getSigner();
@@ -87,24 +105,50 @@ const handleBuyNFT = async (item:any) => {
     <>
     <div className={styles.heading}>Explore NFTs
     </div>
+    <div style={{display:"flex", justifyContent:"space-between", margin:"0 30px"}}>
+      <div style={{display:"flex", justifyContent:"space-between"}}>
+      <Button style={{background:"#ae4cff", color:"white", marginRight:"10px"}}><BiCategory style={{marginRight:"4px"}}/>Category</Button>
+      <Button style={{background:"#ae4cff", color:"white",  marginRight:"10px"}}><AiFillDollarCircle style={{marginRight:"4px"}}/>Price Range</Button>
+      <Button style={{background:"#ae4cff", color:"white",  marginRight:"10px"}}><ImPriceTags style={{marginRight:"4px"}}/>Sale Type</Button>
+      </div>
+      <div>
+      <Button style={{background:"#3A9BFC", color:"white"}}><AiOutlineEye style={{marginRight:"4px"}}/>View All NFT</Button>
+      </div>
+    </div>
     <div className={styles.container}>
       {
       nfts.length > 0 && nfts.map((item:any, id) => (
          <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key ={id}>
          <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt=""/>
          <div className={styles.card_body}>
-           <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}>{item.name}</Text>
+            {/* <Link href="/productDetail"> */}
+            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}>{item.name}</Text>
+            {/* </Link> */}
+          
            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
            
          </div>
          <hr style={{borderColor:"#eee"}}/>
          <div className={styles.price}>
-           <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-           <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£{ethers.utils.formatEther(item.totalPrice)}</Text>
+            <div>
+            <Text style={{fontSize:"14px", color:"#909090", marginTop:"-5px"}}>Price</Text>
+          
+            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>{ethers.utils.formatEther(item.totalPrice)} ETH</Text>
+          
+          
+            
+         
+            </div>
+          
+          <div>
+          <Button onClick={() => handleBuyNFT(item)} style={{background: "#009cf7", color:"#fff", width:"150px"}} >
+          BUY NFT
+          </Button>
+          </div>
          </div>
          <div className={styles.button_buy}>
-         <Button onClick={() => handleBuyNFT(item)} style={{background: "linear-gradient(to right, #D01498,#647ECB,#647ECB,#D01498)", color:"#fff", width:"150px"}} >
-          <BsCart4 size={18} style={{marginRight:"4px"}} />Purchase
+         <Button style={{background: "linear-gradient(to right, #D01498,#647ECB)", color:"#fff", width:"160px"}} >
+          <BsCart4 size={20} style={{marginRight:"2px"}} />ADD TO CART
           </Button>
          </div>
         
@@ -112,7 +156,7 @@ const handleBuyNFT = async (item:any) => {
        </Card>
       ))
     }
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
+    {/* <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
           <Image src="/image/2.jpg" alt=""/>
           <div className={styles.card_body}>
             <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
@@ -223,7 +267,7 @@ const handleBuyNFT = async (item:any) => {
             <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
           </div>
             
-        </Card>
+        </Card> */}
     </div>
     </>
     

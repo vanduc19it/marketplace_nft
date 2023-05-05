@@ -20,11 +20,18 @@
     border-radius: 0px;
    
   }
+  .card:hover {
+    cursor: pointer;
+  }
   .card_container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     grid-gap: 10px; 
+    transition: all 0.3s ease;
+  }
+  .card_container:hover {
+    transform: translateY(-2px);
   }
   .card_body {
     display: flex;
@@ -44,3 +51,4 @@
     align-items: center;
   }
   
+

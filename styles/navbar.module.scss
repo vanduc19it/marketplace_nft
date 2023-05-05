@@ -4,15 +4,15 @@
     justify-content: space-around;
     margin: 20px 70px;
     padding-top: 40px;
+    padding-right: 20px;
 }
 .logo {
-    display: flex;
-    align-items: center;
+    cursor: pointer;
 }
 .menu {
     display: flex;
     width: 200px;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 .input1:focus-visible {
     outline: none;
@@ -28,7 +28,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     padding: 10px;
     margin: 20px 0px;
     border-radius: 20px;

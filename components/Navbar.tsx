@@ -3,8 +3,11 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { IoIosSearch } from "react-icons/io";
 import { BsCart4 } from "react-icons/bs";
-import { BiUserCircle } from "react-icons/bi";
+import { BiUserCircle,BiPencil } from "react-icons/bi";
 import { MdWallet } from "react-icons/md";
+import { HiOutlineUser } from "react-icons/hi";
+import { BiCategoryAlt } from "react-icons/bi";
+import { FiLogOut } from "react-icons/fi";
 import styles from '../styles/navbar.module.scss'
 import {ethers} from 'ethers'
 declare var window: any;
@@ -12,14 +15,13 @@ const Navbar = () => {
 
 
     const [provider, setProvider] = useState(null);
-    const [address, setAddress] = useState(null);
+    const [address, setAddress] = useState("");
     const [balance, setBalance] = useState(0);
 
-    const handleWeb3 = async () => {
+    const handleConnectWallet = async () => {
         if(typeof window !== "undefined") {
-    
-        
-        //init provider
+        try {
+             //init provider
         const provider:any = new ethers.providers.Web3Provider(window.ethereum)
         await provider.send("eth_requestAccounts", []);
         const signer:any = provider.getSigner();
@@ -32,8 +34,15 @@ const Navbar = () => {
         setProvider(provider);
     
             
+        } catch (error) {
+         console.log(error)   
+        }
+        
+       
+            
         
       }
+      onClose();
     }
     console.log(provider)
     console.log(address, balance)
@@ -45,10 +54,10 @@ const Navbar = () => {
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader style={{fontWeight:"700"}}>Choose Wallet</ModalHeader>
+          <ModalHeader style={{fontWeight:"700"}}>Choose Your Wallet</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-                <div className={styles.connect}>
+                <div className={styles.connect} onClick={handleConnectWallet}>
                     <div className={styles.wallet}>
                     <Image src="/metamask.svg" alt="" style={{width:"50px", height:"50px"}}/>
                     <Text style={{fontWeight:"700", marginLeft:"20px"}}>Metamask</Text>
@@ -98,15 +107,18 @@ const Navbar = () => {
       </Modal>
     <div className={styles.navbar}>
         <div className={styles.logo}>
+        <Link href="/" style={{display:"flex", alignItems:"center"}}>
         <Image src="/logo.svg" alt="" style={{width:"40px", marginRight:"10px"}}/>
-        <Link style={{fontWeight:"600", fontSize:"18px"}} href="/">Marketplace</Link>
+        <Text style={{fontWeight:"600", fontSize:"18px"}}>Marketplace</Text>
+        </Link>
+      
         </div>
         <div className={styles.menu}>
                         <Link style={{fontWeight:"600", fontSize:"18px"}} href="/">Category</Link>
                     
                         
                     <div>
-                    <Link  style={{fontWeight:"600", fontSize:"18px"}} onClick={onToggle} href="/">Ranking</Link>
+                    <Link  style={{fontWeight:"600", fontSize:"18px"}} href="/">Ranking</Link>
                 <ScaleFade initialScale={0.9} in={isOpen} style={{position:"absolute"}}>
                     <Box
                     p='40px'
@@ -124,7 +136,7 @@ const Navbar = () => {
        
         <div className={styles.search}>
             <InputGroup>
-            <Input variant="filled" placeholder="Search..."/>
+            <Input variant="filled" placeholder="Search items, collections and accounts" />
             <InputLeftElement pointerEvents="none" children={<Icon as={IoIosSearch} />} />
             </InputGroup>
         </div>
@@ -132,7 +144,7 @@ const Navbar = () => {
 
         
         <div>
-            <Button style={{borderRadius:"10px 0 0 10px", borderRight:"0.1px solid #ccc",}} onClick={handleWeb3}>
+            <Button style={{borderRadius:"10px 0 0 10px", borderRight:"0.1px solid #ccc",}} onClick={onOpen}>
                 {
                     provider ? (
                         <>
@@ -144,17 +156,26 @@ const Navbar = () => {
                 }
 
             </Button>
-                            <Menu>
-                <MenuButton as={Button} style={{borderRadius:"0 10px 10px 0",}}>
-                    <BiUserCircle size={25}/>
-                </MenuButton>
-                <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem>Delete</MenuItem>
-                    <MenuItem>Attend a Workshop</MenuItem>
-                </MenuList>
+                <Menu>
+                    <MenuButton as={Button} style={{borderRadius:"0 10px 10px 0"}}>
+                        {
+                        address.length > 0  ? <Image src="/1.jfif" alt="" style={{width:"22px", height:"22px", borderRadius:"50%"}}/> :  <BiUserCircle size={25}/>
+                        } 
+                    </MenuButton>
+                    <MenuList >
+                    <Link href="/profile">
+                        <MenuItem style={{fontWeight:"700"}}><HiOutlineUser style={{marginRight:"4px"}} size={18}/>Profile</MenuItem>
+                    </Link>
+                    <Link href="/">
+                        <MenuItem style={{fontWeight:"700"}}><BiCategoryAlt style={{marginRight:"4px"}} size={18}/>My Collections</MenuItem>
+                    </Link>
+                    <Link href="/createNewNFT">
+                        <MenuItem style={{fontWeight:"700"}}><BiPencil style={{marginRight:"4px"}} size={18}/>Create</MenuItem>
+                    </Link>
+                    <Link href="/">
+                        <MenuItem style={{fontWeight:"700"}}><FiLogOut style={{marginRight:"4px"}} size={18}/>Log Out</MenuItem>
+                    </Link>
+                    </MenuList>
                 </Menu>
         </div>
         <div>
