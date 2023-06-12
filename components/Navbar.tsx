@@ -1,6 +1,6 @@
 import { Box, Button, Icon, Image, Input, InputGroup, InputLeftElement, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, ScaleFade, Text, border, useDisclosure } from '@chakra-ui/react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IoIosSearch } from "react-icons/io";
 import { BsCart4 } from "react-icons/bs";
 import { BiUserCircle,BiPencil } from "react-icons/bi";
@@ -10,6 +10,7 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
 import styles from '../styles/navbar.module.scss'
 import {ethers} from 'ethers'
+import { SearchContext } from './SearchContext';
 declare var window: any;
 const Navbar = () => {
 
@@ -18,6 +19,9 @@ const Navbar = () => {
     const [address, setAddress] = useState("");
     const [balance, setBalance] = useState(0);
 
+
+    const { isLoggedIn, handleConnect1 } = useContext(SearchContext);
+    const [login, setLogin] = useState(1)
     const handleConnectWallet = async () => {
         if(typeof window !== "undefined") {
         try {
@@ -29,25 +33,62 @@ const Navbar = () => {
         const address:any = await signer.getAddress();
         const bigBalance:any = await signer.getBalance();
         const balance:any = Number.parseFloat(ethers.utils.formatEther(bigBalance))
-        setAddress(address); //set address to state wallet
-        setBalance(balance); //set balance to state wallet
+         //set balance to state wallet
         setProvider(provider);
-    
-            
+        localStorage.setItem("address", address)
+        localStorage.setItem("balance", balance)
+        setLogin(login+ 1)
+        handleConnect1(true);
+        console.log(isLoggedIn);
         } catch (error) {
          console.log(error)   
-        }
-        
-       
-            
+        }   
         
       }
       onClose();
     }
+    
+	useEffect(() => {
+		
+		console.log(isLoggedIn)
+	  }, [isLoggedIn]);
+  
+
+    const [logout, setLogout] = useState(1)
+    const handleLogout = ()=> {
+      localStorage.setItem("address", "")
+      localStorage.setItem("balance", "")
+      setProvider(null);
+      setLogout(logout + 1)
+      console.log(logout)
+      handleConnect1(false)
+      console.log(isLoggedIn)
+    }
+    useEffect(() => {
+        const addressData:any = localStorage.getItem('address');
+        const balanceData:any = localStorage.getItem('balance');
+        const balanceData1:any = balanceData ? Number(balanceData) : 0;
+        setAddress(addressData); //set address to state wallet
+        setBalance(balanceData1);
+      }, [logout, login]);
+   
     console.log(provider)
     console.log(address, balance)
     
     const {isOpen,  onOpen, onClose ,onToggle} = useDisclosure()
+
+
+    const { handleSearch } = useContext(SearchContext);
+    const [searchInput, setSearchInput] = useState('');
+
+
+  const handleKeyDown = (e:any) => {
+    if (e.keyCode === 13) {
+      // Thực hiện tìm kiếm khi nhấn phím Enter
+      handleSearch(searchInput);
+    }
+  };
+ 
   return (
     <>
     
@@ -136,8 +177,8 @@ const Navbar = () => {
        
         <div className={styles.search}>
             <InputGroup>
-            <Input variant="filled" placeholder="Search items, collections and accounts" />
-            <InputLeftElement pointerEvents="none" children={<Icon as={IoIosSearch} />} />
+            <Input variant="filled" placeholder="Search items, collections and accounts" onChange={e => setSearchInput(e.target.value)} onKeyDown={handleKeyDown}  />
+            <InputLeftElement pointerEvents="none" children={<Icon as={IoIosSearch}  />}  />
             </InputGroup>
         </div>
         <div className={styles.button}>
@@ -146,7 +187,7 @@ const Navbar = () => {
         <div>
             <Button style={{borderRadius:"10px 0 0 10px", borderRight:"0.1px solid #ccc",}} onClick={onOpen}>
                 {
-                    provider ? (
+                    address?.length > 0 ? (
                         <>
                         <Image src="/ETH1.png" alt="" style={{width:"20px", marginRight:"5px"}}/> <Text>{balance.toFixed(2)} ETH</Text></>
                         
@@ -159,7 +200,7 @@ const Navbar = () => {
                 <Menu>
                     <MenuButton as={Button} style={{borderRadius:"0 10px 10px 0"}}>
                         {
-                        address.length > 0  ? <Image src="/1.jfif" alt="" style={{width:"22px", height:"22px", borderRadius:"50%"}}/> :  <BiUserCircle size={25}/>
+                        address?.length > 0  ? <Image src="/1.jfif" alt="" style={{width:"22px", height:"22px", borderRadius:"50%"}}/> :  <BiUserCircle size={25}/>
                         } 
                     </MenuButton>
                     <MenuList >
@@ -172,9 +213,9 @@ const Navbar = () => {
                     <Link href="/createNewNFT">
                         <MenuItem style={{fontWeight:"700"}}><BiPencil style={{marginRight:"4px"}} size={18}/>Create</MenuItem>
                     </Link>
-                    <Link href="/">
-                        <MenuItem style={{fontWeight:"700"}}><FiLogOut style={{marginRight:"4px"}} size={18}/>Log Out</MenuItem>
-                    </Link>
+                   
+                        <MenuItem style={{fontWeight:"700"}} onClick={handleLogout}><FiLogOut style={{marginRight:"4px"}} size={18} />Log Out</MenuItem>
+                  
                     </MenuList>
                 </Menu>
         </div>

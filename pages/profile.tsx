@@ -1,7 +1,7 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import { Button, Card, Image, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react'
-import React, { useEffect , useState} from 'react'
+import { Button, Card, FormControl, FormLabel, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure } from '@chakra-ui/react'
+import React, { useContext, useEffect , useState} from 'react'
 import styles from '../styles/profile.module.scss'
 import { FaRegHeart } from "react-icons/fa";
 import {ethers} from 'ethers'
@@ -9,9 +9,14 @@ import MarketplaceAbi from '../pages/datasmc/abi/marketplaceAbi.json';
 import MarketplaceAddress from '../pages/datasmc/address/marketplaceAddress.json';
 import NFTAbi from '../pages/datasmc/abi/nftAbi.json';
 import NFTAddress from '../pages/datasmc/address/nftAddress.json';
+import AuctionAbi from '../pages/datasmc/abi/auctionAbi.json';
+import AuctionAddress from '../pages/datasmc/address/auctionAddress.json';
 import axios from 'axios';
 declare var window: any;
 import Countdown from 'react-countdown';
+import BigNumber from 'bignumber.js'
+import { SearchContext } from '@/components/SearchContext'
+import { useRouter } from 'next/router'
 
 
 interface NFT {
@@ -30,6 +35,7 @@ const profile = () => {
   const [market, setMaket] = useState([]);
 
   const [purchases, setPurchases] = useState([])
+  const [provider, setProvider] = useState()
 
   useEffect(() => {
 
@@ -37,8 +43,8 @@ const profile = () => {
       if(typeof window !== "undefined") {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
-        const provider2 = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30');
-   
+        const provider2:any = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30');
+        setProvider(provider2)
         //get contract of nft 
         const contract2 = new ethers.Contract(NFTAddress.address, NFTAbi, provider2);
 
@@ -191,16 +197,64 @@ const profile = () => {
  console.log(purchases,"purchas")
  
 
+const { isLoggedIn, handleConnect1} = useContext(SearchContext);
+	 
+	useEffect(() => {
+
+		const addressData:any = localStorage.getItem('address');
+    
+
+		if(addressData?.length > 0) {
+			handleConnect1(true)
+		}
+		console.log(isLoggedIn)
+
+	  }, [isLoggedIn]);
+
+    const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+    const [tx, setTx] = useState('')
+    const [open, setOpen] = useState(false)
+
  const handleListForSale = async (item:any) => {
-  const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-  const signer: any = provider.getSigner();
-  var nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer);
-  var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
-    console.log(item,"item")
-    await (await nft.setApprovalForAll(marketplace.address, true)).wait();
-    const listingPrice = ethers.utils.parseEther(item.price.toString());
-    console.log(listingPrice)
-			await (await marketplace.makeItem(nft.address, item.idToken, listingPrice)).wait();
+  if(!isLoggedIn) {
+    alert("Vui lòng kết nối ví metamask! ")
+  } else {
+    try {
+      setLoadingMap(prevLoadingMap => ({
+        ...prevLoadingMap,
+        [item.idToken]: true
+      }));
+
+     
+      const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+    const signer: any = provider.getSigner();
+    var nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer);
+    var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
+      console.log(item,"item")
+      await (await nft.setApprovalForAll(marketplace.address, true)).wait();
+      const listingPrice = ethers.utils.parseEther(item.price.toString());
+      console.log(listingPrice)
+        const tx = await (await marketplace.makeItem(nft.address, item.idToken, listingPrice)).wait();
+        console.log(tx)
+        if(tx) {
+					setTx(tx?.transactionHash);
+          setOpen(true)
+					setLoadingMap(prevLoadingMap => ({
+            ...prevLoadingMap,
+            [item.idToken]: false
+          }));
+				}
+
+    } catch (error) {
+      console.log(error)
+      setLoadingMap(prevLoadingMap => ({
+        ...prevLoadingMap,
+        [item.idToken]: false
+      }));
+    }
+    
+  }
+ 
  }
 
  const str = "0xf14fD5FFEbBa9493Dd7Fb2CC33D97B1589C29A88";
@@ -214,8 +268,98 @@ const profile = () => {
 //   setEndTime(Date.now() + 5000);
 // };
 
+
+const [imageNFTAuction, setImageNFTAuction] = useState('')
+const [timeExpireAuction, setTimeExpireAuction] = useState('')
+const [priceAuction, setPriceAution] = useState('')
+const [idNFTAuction,setIdNFTAuction] = useState(1)
+const handleAuction = (item:any)=> {
+  console.log(item)
+  onOpen();
+  setImageNFTAuction(item.image)
+  setIdNFTAuction(item.idToken)
+
+}
+
+const { isOpen, onOpen, onClose } = useDisclosure()
+
+const initialRef = React.useRef(null)
+const finalRef = React.useRef(null)
+
+const handleCreateAuction = async () => {
+  const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+  const signer: any = provider.getSigner();
+  const auctionContract = new ethers.Contract(AuctionAddress.address, AuctionAbi, signer);
+  console.log(auctionContract)
+  // auctionContract.createAuction(id, price, Date.now(), end)
+  console.log(ethers.utils.parseUnits(priceAuction, 18), ethers.BigNumber.from(Math.floor(new Date().getTime() / 1000)),new Date().getTime(),new Date(timeExpireAuction).getTime() )
+  const createAuction = await auctionContract.createAuction(idNFTAuction, ethers.utils.parseUnits(priceAuction, 18),ethers.BigNumber.from(Math.floor(new Date().getTime() / 1000)), new Date(timeExpireAuction).getTime() )
+  console.log(createAuction)
+}
+
+const getListAuction = () => {
+
+}
+
+
+
+	// const navigate = useNavigate()
+	const router = useRouter();
+	const handleViewTx = () => {
+		setOpen(false)
+		router.push(`https://mumbai.polygonscan.com/tx/${tx}`);
+	}
+
   return (
-    <>  
+    
+    <>
+
+    <Modal closeOnOverlayClick={true} isOpen={open} onClose={onClose}>
+				<ModalOverlay />
+
+				<ModalContent style={{textAlign:'center'}}>
+				<ModalHeader >LIST NFT</ModalHeader>
+				<ModalCloseButton />
+				<ModalBody pb={6}>
+					<Text style={{fontStyle:"italic"}}>(List your nft successfully)</Text>
+					<Button style={{marginTop:"20px", background:"yellow"}} onClick={handleViewTx}>{tx.slice(0, 10)}...{tx.slice(-10)}</Button>
+				</ModalBody> 
+				</ModalContent>
+			</Modal>
+
+      <Modal  
+        initialFocusRef={initialRef}
+        finalFocusRef={finalRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create new auction</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+          <FormControl>
+              <Image src={imageNFTAuction.replace("ipfs://", "https://ipfs.io/ipfs/")} alt="image auction" width={400}/>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Price auction</FormLabel>
+              <Input ref={initialRef} placeholder='0' onChange={(e)=> setPriceAution(e.target.value)}/>
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Expiration date</FormLabel>
+              <Input type='date' onChange={(e)=> setTimeExpireAuction(e.target.value)}/>
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={handleCreateAuction}>
+              Create
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>  
         <div style={{margin:"-30px -75px 40px"}}>
         <Navbar/>
         </div>
@@ -290,8 +434,9 @@ const profile = () => {
          </div>
          <hr style={{borderColor:"#eee"}}/>
          <div className={styles.price}>
-          <Button style={{background:"#eae30b", color:"white"}} onClick={()=>handleListForSale(item)}>List for sale</Button>
-          <Button style={{background:"#ea0061",  color:"white"}}>Auction</Button>
+          <Button style={{background:"#eae30b", color:"white"}} onClick={()=>handleListForSale(item)}>
+          {!loadingMap[item.idToken] ? ('List for sale')  :(<><Text style={{marginRight:'4px'}}>Listing</Text>  <Spinner size='sm'/></>) }</Button>
+          <Button style={{background:"#ea0061",  color:"white"}} onClick={()=>handleAuction(item)}>Auction</Button>
            
          </div>
          <div className={styles.button_buy}>

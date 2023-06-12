@@ -34,6 +34,8 @@ async function main() {
 
 
 // auction smc deployed at:  0xED0cF950fDFf96650F0a47471B63C22cF2922848
+// auction smc deployed at:  0x7df407c5c198B8b2DCF3e413115995641f07218f
+// auction smc deployed at:  0xeAcABD7063e18211Fd31D223c24ea2B1DE10F665
 
 
 main().catch((error) => {

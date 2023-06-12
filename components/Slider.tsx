@@ -2,6 +2,7 @@ import { Button, Card, Heading, Image, Text } from '@chakra-ui/react'
 import React from 'react'
 import styles from "../styles/slider.module.scss"
 import Carousel from "react-elastic-carousel";
+import Link from 'next/link';
 const Slider = () => {
     const breakPoints = [
         { width: 1, itemsToShow: 1 },
@@ -17,7 +18,10 @@ const Slider = () => {
         <Text>Buy, sell, and discover exclusive digital assets.</Text>
         <div>
             <Button className={styles.btn} style={{background:"white", width:"150px"}}>Explore</Button>
-            <Button className={styles.btn} style={{background:"#3a9bfc", width:"150px", color:"white"}}>Create</Button>
+            <Link href='/createNewNFT'>
+            <Button className={styles.btn} style={{background:"#3a9bfc", width:"150px", color:"white"}} >Create</Button>
+            </Link>
+            
         </div>
     </div>
     <div style={{width:"30vw"}}>
