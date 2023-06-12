@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext  } from 'react'
 import styles from '../styles/marketplace.module.scss'
 import { Button, Card, Image, Text } from '@chakra-ui/react'
 import { FaRegHeart } from "react-icons/fa";
@@ -10,96 +10,128 @@ import MarketplaceAbi from '../pages/datasmc/abi/marketplaceAbi.json';
 import MarketplaceAddress from '../pages/datasmc/address/marketplaceAddress.json';
 import NFTAbi from '../pages/datasmc/abi/nftAbi.json';
 import NFTAddress from '../pages/datasmc/address/nftAddress.json';
-import Link from 'next/link';
 import { BiCategory } from 'react-icons/bi';
+import Link from 'next/link';
+import { SearchContext } from './SearchContext';
 
 declare var window: any;
 const Marketplace = () => {
-
+  
+  const {handleConnect1} = useContext(SearchContext);
   useEffect(() => {
     loadMarketplaceItems();
+    const addressData:any = localStorage.getItem('address');
+    
+
+		if(addressData?.length > 0) {
+			handleConnect1(true)
+		}
   }, []);
   
   const [nfts, setNFTs] = useState([]);
+  
   const loadMarketplaceItems = async () => {
-
-    if(typeof window !== "undefined") {
-    // const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-    // await provider.send('eth_requestAccounts', []); 
-    // // await window.ethereum.request({ method: 'eth_requestAccounts' });
-    //   const signer: any = provider.getSigner();
-     // Get deployed copies of contracts
-    //  var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer)
-    //   console.log(marketplace, "abc")
-
-
-
-     const provider1 = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30");
-
-     const nft = new ethers.Contract(NFTAddress.address, NFTAbi, provider1)
-     const marketplace = new ethers.Contract( MarketplaceAddress.address, MarketplaceAbi, provider1);
-
-    //  console.log(contract, "contratc")
-    console.log(nft)
-    if (nft !== undefined) {
-      // const tokenCount = await nft.itemCount();
-      // console.log(tokenCount, "token111")
-    }
-    
-    // //   console.log(contract, "contarc")
-    //   if (contract !== undefined) {
-    //     const tokenCount = await contract.itemCount();
-    //     console.log(tokenCount, "token")
-    //   }
-    
-   
-    // Load all unsold items
-    if (marketplace !== undefined) {
-      const itemCount = await marketplace.itemCount();
-      let items: any = [];
-      for (let i = 1; i <= itemCount; i++) {
-        const item = await marketplace.items(i);
-        // alert(item);
-        if (!item.sold) {
-          // get uri url from nft contract
-          const uri = await nft.tokenURI(item.tokenId);
-          // use uri to fetch the nft metadata stored on ipfs
-          const response = await fetch(uri);
+    try {
+      const provider = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30");
   
-          const metadata = await response.json();
-          // get total price of item (item price + fee)
-          const totalPrice = await marketplace.getTotalPrice(item.itemId);
-          // Add item to items array
-          items.push({
-            totalPrice,
-            itemId: item.itemId,
-            seller: item.seller,
-            name: metadata.name,
-            description: metadata.description,
-            image: metadata.image,
-          });
+      const nft = new ethers.Contract(NFTAddress.address, NFTAbi, provider);
+      const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, provider);
+  
+      if (nft && marketplace) {
+        const itemCount = await marketplace.itemCount();
+        const items:any = [];
+  
+        for (let i = 1; i <= itemCount; i++) {
+          const item = await marketplace.items(i);
+  
+          if (!item.sold) {
+            const uri = await nft.tokenURI(item.tokenId);
+            const response = await fetch(uri);
+            const metadata = await response.json();
+            const totalPrice = await marketplace.getTotalPrice(item.itemId);
+            const owner = await nft.ownerOf(i);
+            console.log(owner)
+            console.log(metadata)
+  
+            items.push({
+              totalPrice,
+              itemId: item.itemId.toNumber(),
+              seller: item.seller,
+              name: metadata.name,
+              description: metadata.description,
+              image: metadata.image,
+              price: metadata.price,
+              owner: owner
+            });
+          }
         }
-      }
-      setNFTs(items);
-    }
-  }
-  };
-  console.log(nfts);
 
+     
   
-const handleBuyNFT = async (item:any) => {
-  // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+         // setNFTs(items);
+         localStorage.setItem('nftsData', JSON.stringify(items));
+      }
+    } catch (error) {
+      console.error("Error loading marketplace items:", error);
+    }
+  };
+  const [nftSearch, setNftSearch] = useState([]);
+  useEffect(()=> {
+    const nftData:any = localStorage.getItem('nftsData');
+    const nfts:any = nftData ? JSON.parse(nftData) : [];
+    setNFTs(nfts)
 
-  const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+    // const nftDataSearch:any = localStorage.getItem('nftsSearch');
+    // const nfts1:any =  nftDataSearch ? JSON.parse( nftDataSearch) : [];
+    // setNftSearch(nfts1)
+  
 
-  const signer: any = provider.getSigner();
-  console.log(item)
- // Get deployed copies of contracts
- var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer)
-  await (await marketplace.purchaseItem(item.itemId, { value: item.totalPrice })).wait()
-  loadMarketplaceItems();
-}
+  },[])
+  
+  const handleBuyNFT = async (item:any) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
+  
+      await marketplace.purchaseItem(item.itemId, { value: item.totalPrice });
+      loadMarketplaceItems();
+    } catch (error) {
+      console.error("Error buying NFT:", error);
+    }
+  };
+  
+  console.log(nfts);
+ 
+    // const savedQuery = localStorage.getItem('searchQuery');
+    // const query = savedQuery || '';
+    // console.log(query)
+  
+    
+    // if (query === '') {
+    //   setNFTs(nfts)
+    //   console.log(nfts)
+    // } else {
+    //   const filteredItems = nfts.filter((item:any) => item.name.includes(query));
+    //   setNFTs(filteredItems);
+    //   console.log(nfts)
+    // }
 
+    const { searchQuery } = useContext(SearchContext);
+
+    useEffect(() => {
+      const nftData:any = localStorage.getItem('nftsData');
+      const nfts1:any = nftData ? JSON.parse(nftData) : [];
+      if (searchQuery !== '') {
+        const filteredItems = nfts1.filter((item:any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+        setNFTs(filteredItems);
+      } else {
+      
+        setNFTs(nfts1)
+      }
+    }, [searchQuery]);
+ 
 
   return (
     <>
@@ -117,44 +149,50 @@ const handleBuyNFT = async (item:any) => {
     </div>
     <div className={styles.container}>
       {
-      nfts.length > 0 && nfts.map((item:any, id) => (
-         <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key ={id}>
-         <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt=""/>
-         <div className={styles.card_body}>
-            {/* <Link href="/productDetail"> */}
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}>{item.name}</Text>
-            {/* </Link> */}
-          
-           <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-           
-         </div>
-         <hr style={{borderColor:"#eee"}}/>
-         <div className={styles.price}>
-            <div>
-            <Text style={{fontSize:"14px", color:"#909090", marginTop:"-5px"}}>Price</Text>
-          
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>{ethers.utils.formatEther(item.totalPrice)} ETH</Text>
-          
-          
-            
-         
-            </div>
-          
-          <div>
-          <Button onClick={() => handleBuyNFT(item)} style={{background: "#009cf7", color:"#fff", width:"150px"}} >
-          BUY NFT
-          </Button>
-          </div>
-         </div>
-         <div className={styles.button_buy}>
-         <Button style={{background: "linear-gradient(to right, #D01498,#647ECB)", color:"#fff", width:"160px"}} >
-          <BsCart4 size={20} style={{marginRight:"2px"}} />ADD TO CART
-          </Button>
-         </div>
+          nfts.length > 0 && nfts.map((item:any, id) => (
         
+            <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key ={id}>
+             <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`}>
+               <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt=""/>
+             </Link>
            
-       </Card>
-      ))
+            <div className={styles.card_body}>
+              <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`}>
+               <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}>{item.name}</Text>
+               </Link>
+             
+              <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
+              
+            </div>
+            <hr style={{borderColor:"#eee"}}/>
+            <div className={styles.price}>
+               <div>
+               <Text style={{fontSize:"14px", color:"#909090", marginTop:"-5px"}}>Price</Text>
+             
+               <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>{item.price} ETH</Text>
+             
+             
+               
+            
+               </div>
+             
+             <div>
+             <Button onClick={() => handleBuyNFT(item)} style={{background: "#009cf7", color:"#fff", width:"150px"}} >
+             BUY NFT
+             </Button>
+             </div>
+            </div>
+            <div className={styles.button_buy}>
+            <Button style={{background: "linear-gradient(to right, #D01498,#647ECB)", color:"#fff", width:"160px"}} >
+             <BsCart4 size={20} style={{marginRight:"2px"}} />ADD TO CART
+             </Button>
+            </div>
+           
+              
+          </Card>
+         ))
+
+      
     }
     {/* <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
           <Image src="/image/2.jpg" alt=""/>

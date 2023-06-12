@@ -7,10 +7,11 @@ import TrendingCollection from '@/components/TrendingCollection'
 import Category from '@/components/Category'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-
+import { SearchProvider } from '../components/SearchContext';
 
 export default function Home() {
   return (
+    
     <main className="">
         <Header/>
         <TrendingCollection/>
@@ -20,5 +21,6 @@ export default function Home() {
         <Category/>
         <Footer/>
     </main>
+   
   )
 }

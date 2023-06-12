@@ -1,12 +1,64 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import { Button, Card, Image, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react'
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 import { FaRegHeart } from "react-icons/fa";
-import styles from '../styles/productdetail.module.scss'
+import styles from '../../styles/productdetail.module.scss'
 import { BsCart4 } from "react-icons/bs";
 import { AiOutlineEye } from 'react-icons/ai';
+import { useRouter } from 'next/router';
+import { ethers } from 'ethers';
+import NFTAbi from '../../pages/datasmc/abi/nftAbi.json';
+import NFTAddress from '../../pages/datasmc/address/nftAddress.json';
+import axios from 'axios';
+import MarketplaceAbi from '../../pages/datasmc/abi/marketplaceAbi.json';
+import MarketplaceAddress from '../../pages/datasmc/address/marketplaceAddress.json';
+import Link from 'next/link';
+declare var window: any;
 const productDetail = () => {
+
+  interface NftData {
+    name: string;
+    image: string;
+    price: number;
+    owner: string;
+    description: string;
+    // Các thuộc tính khác của đối tượng nft
+  }
+  
+
+  const router = useRouter();
+  const { id } = router.query;
+  console.log(typeof (id))
+  const [nft, setNft] = useState<NftData>({ name: '', image: '', price: 0, owner:'', description:'' });
+  
+  useEffect(() => {
+
+    const nftData = localStorage.getItem('nftsData');
+    const nfts = nftData ? JSON.parse(nftData) : [];
+    const parsedId = typeof id === 'string' ? parseInt(id) : null;
+  
+    if (parsedId !== null) {
+      const nft = nfts.find((item: any) => ethers.BigNumber.from(item.itemId).toNumber() === parsedId);
+      console.log(nft);
+      setNft(nft)
+    } else {
+      console.error('Invalid id:', id);
+    }
+  }, [id]);
+
+
+  const handleBuyNFT = async (item:any) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
+  
+      await marketplace.purchaseItem(item.itemId, { value: item.totalPrice });
+    } catch (error) {
+      console.error("Error buying NFT:" , error);
+    }
+  };
   return (
     <>
     <div style={{margin:"-30px -80px 0px", borderBottom:"1px solid #eee", paddingBottom:"10px"}} >
@@ -16,23 +68,23 @@ const productDetail = () => {
     <div className={styles.detail}>
         <div className={styles.left}>
 
-            <Image src="/image/marscat1.png" alt="" style={{width:"600px", height:"600px"}}/>
+            <Image src={nft.image.replace("ipfs://", "https://ipfs.io/ipfs/")}  alt="" style={{width:"600px", height:"600px"}}/>
 
         </div>
         <div className={styles.right}>
-            <Text style={{fontSize:"34px", fontWeight:"700", marginTop:"10px"}}>Mars Cat 1</Text>
-            <Text style={{ fontWeight:"500"}}>Owned by 0xf14... 9A88</Text>
+            <Text style={{fontSize:"34px", fontWeight:"700", marginTop:"10px"}}>{nft.name}</Text>
+            <Text style={{ fontWeight:"500"}}>Owned by {nft.owner.slice(0, 5)}...{nft.owner.slice(-5)}</Text>
             <div style={{margin:"30px 0px"}}>
             <Text style={{ fontWeight:"500", fontSize:"20px"}}>Current price</Text>
             <div style={{display:"flex"}}>
               <Image src="/eth1.png" alt="" style={{width:"40px"}}/>
-              <Text style={{ fontWeight:"500", fontSize:"30px"}}>0.05 ETH</Text>
+              <Text style={{ fontWeight:"500", fontSize:"30px"}}>{nft.price} ETH</Text>
             </div>
             </div>
           
             
                 <div style={{margin:"20px 0px 40px"}}>
-                <Button style={{borderRadius:"10px", background:"#2081E2", width:"160px", color:"white"}}>
+                <Button style={{borderRadius:"10px", background:"#2081E2", width:"160px", color:"white"}} onClick={() => handleBuyNFT(nft)}>
                         Buy Now
                     </Button>
                     <Button style={{borderRadius:"10px", background:"#000", width:"160px", color:"white", marginLeft:"20px"}}>
@@ -50,13 +102,13 @@ const productDetail = () => {
 
                 <TabPanels>
                     <TabPanel>
-                    <p style={{textAlign:"justify"}}>Mars Cat NFT is a unique and captivating type of NFT (Non-Fungible Token) designed around the space and mystical creatures theme. The Mars Cat NFT is specifically inspired by the image of a adventurous cat searching for an exciting journey on the Red Planet. This NFT captures the charm and spirit of exploration, and is perfect for collectors and enthusiasts who appreciate the beauty of art, space and feline companions. With its one-of-a-kind design, the Mars Cat NFT is sure to be a treasured addition to any collection.</p>
+                    <p style={{textAlign:"justify"}}>{nft.description} NFT is a unique and captivating type of NFT (Non-Fungible Token) designed around the space and mystical creatures theme. The {nft.description} NFT is specifically inspired by the image of a adventurous cat searching for an exciting journey on the Red Planet. This NFT captures the charm and spirit of exploration, and is perfect for collectors and enthusiasts who appreciate the beauty of art, space and feline companions. With its one-of-a-kind design, the {nft.description} NFT is sure to be a treasured addition to any collection.</p>
                     </TabPanel>
                     <TabPanel>
-                    <p>two!</p>
+                    <p>Review</p>
                     </TabPanel>
                     <TabPanel>
-                    <p>three!</p>
+                    <p>Detail</p>
                     </TabPanel>
                 </TabPanels>
                 </Tabs>
@@ -70,7 +122,10 @@ const productDetail = () => {
   <div className={styles.heading}>Related Products
     </div>
     <div style={{marginRight:"26px"}}>
-    <Button style={{background:"#3A9BFC", color:"white", marginTop:"20px"}}><AiOutlineEye style={{marginRight:"4px"}}/>View All</Button>
+    <Link href='/'>
+    
+         <Button style={{background:"#3A9BFC", color:"white", marginTop:"20px"}}><AiOutlineEye style={{marginRight:"4px"}} />View All</Button>
+    </Link>
     </div>
     </div>
     <div className={styles.container}>
