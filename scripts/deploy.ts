@@ -17,7 +17,7 @@ async function main() {
 
 
   const Auction = await hre.ethers.getContractFactory("Auction");
-  const auction = await Auction.deploy("0x4E2BA7f7029D3F5D868fCEC2A72d6DaD4da2AbaF", "0x341275249cC12cD5d31E3621D1364DCEc663Eca1");
+  const auction = await Auction.deploy("0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889","0xa87D7D17590933551a4682D7e10A51849812C999");
   console.log('auction smc deployed at: ', auction.address);
 
 }
@@ -38,9 +38,20 @@ async function main() {
 // auction smc deployed at:  0xeAcABD7063e18211Fd31D223c24ea2B1DE10F665
 
 
+// bsc
+// Successfully deployed smart contract to:  0x767181A3c15F21c19f0b83088dB436b111C94e30
+// Successfully deployed marketplace smc to:  0x9b867DE0C586cfa3eeF82c42D63aac3756fA2173
+// auction smc deployed at:  0x23EA3ccf3e9da5E0bD309ad8418c251cf90C69F0
+
+
+// Successfully deployed smart contract to:  0xa87D7D17590933551a4682D7e10A51849812C999
+// Successfully deployed marketplace smc to:  0x8dd393Bc5B3f4A39a1eB007A21A709430224571b
+// auction smc deployed at:  0x978249f736Ed93c7f2D496C9cF666D86c939b8a5
+
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
 
 // npx hardhat run scripts/deploy.ts --network polygon
+// npx hardhat verify --network polygon 0x47a676d4876116778e0c31bFDEa5567dbb757037

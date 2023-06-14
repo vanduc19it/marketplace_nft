@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import { Button, Card, Image, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react'
+import { Button, Card, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure } from '@chakra-ui/react'
 import React,{useEffect, useState} from 'react'
 import { FaRegHeart } from "react-icons/fa";
 import styles from '../../styles/productdetail.module.scss'
@@ -47,20 +47,56 @@ const productDetail = () => {
     }
   }, [id]);
 
-
+  const [loading, setLoading] = useState(false)
+  const [tx, setTx] = useState('')
   const handleBuyNFT = async (item:any) => {
     try {
+      setLoading(true)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
   
-      await marketplace.purchaseItem(item.itemId, { value: item.totalPrice });
+      const tx = await marketplace.purchaseItem(item.itemId, { value: item.totalPrice });
+      console.log(tx)
+      if(tx) {
+        setTx(tx?.hash);
+        onOpen();
+        setLoading(false)
+      }
+
     } catch (error) {
       console.error("Error buying NFT:" , error);
+      setLoading(false)
     }
   };
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+	// const navigate = useNavigate()
+	const handleViewTx = () => {
+   
+		router.push(`https://mumbai.polygonscan.com/tx/${tx}`);
+		setTimeout(() => {
+			onClose();
+		}
+		,4000)
+	}
   return (
     <>
+
+    
+		<Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose} >
+				<ModalOverlay />
+
+				<ModalContent style={{textAlign:'center'}}>
+				<ModalHeader >CREATE NFT</ModalHeader>
+				<ModalCloseButton />
+				<ModalBody pb={6}>
+					<Text style={{fontStyle:"italic"}}>(Create your nft successfully)</Text>
+					<Button style={{marginTop:"20px", background:"yellow"}} onClick={handleViewTx}>{tx.slice(0, 10)}...{tx.slice(-10)}</Button>
+				</ModalBody> 
+				</ModalContent>
+			</Modal>
+
     <div style={{margin:"-30px -80px 0px", borderBottom:"1px solid #eee", paddingBottom:"10px"}} >
     <Navbar/>
     </div>
@@ -85,7 +121,7 @@ const productDetail = () => {
             
                 <div style={{margin:"20px 0px 40px"}}>
                 <Button style={{borderRadius:"10px", background:"#2081E2", width:"160px", color:"white"}} onClick={() => handleBuyNFT(nft)}>
-                        Buy Now
+                {!loading ? ('Buy Now')  :(<><Text style={{marginRight:'4px'}}>Buying</Text>  <Spinner size='sm'/></>) }
                     </Button>
                     <Button style={{borderRadius:"10px", background:"#000", width:"160px", color:"white", marginLeft:"20px"}}>
                         <BsCart4 style={{marginRight:"4px"}}/>
