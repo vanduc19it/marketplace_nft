@@ -204,7 +204,7 @@ const Navbar = () => {
                         } 
                     </MenuButton>
                     <MenuList >
-                    <Link href="/profile">
+                    <Link href="/profile" >
                         <MenuItem style={{fontWeight:"700"}}><HiOutlineUser style={{marginRight:"4px"}} size={18}/>Profile</MenuItem>
                     </Link>
                     <Link href="/">

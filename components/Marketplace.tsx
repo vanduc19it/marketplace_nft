@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext  } from 'react'
 import styles from '../styles/marketplace.module.scss'
-import { Button, Card, Image, Text } from '@chakra-ui/react'
+import { Button, Card, Image, Spinner, Text } from '@chakra-ui/react'
 import { FaRegHeart } from "react-icons/fa";
 import {ethers} from 'ethers'
 import { BsCart4 } from "react-icons/bs";
@@ -21,7 +21,6 @@ const Marketplace = () => {
   useEffect(() => {
     loadMarketplaceItems();
     const addressData:any = localStorage.getItem('address');
-    
 
 		if(addressData?.length > 0) {
 			handleConnect1(true)
@@ -29,6 +28,7 @@ const Marketplace = () => {
   }, []);
   
   const [nfts, setNFTs] = useState([]);
+  const [checkEvent, setCheckEvent] = useState(1)
   
   const loadMarketplaceItems = async () => {
     try {
@@ -70,6 +70,7 @@ const Marketplace = () => {
   
          // setNFTs(items);
          localStorage.setItem('nftsData', JSON.stringify(items));
+         setCheckEvent(checkEvent + 1)
       }
     } catch (error) {
       console.error("Error loading marketplace items:", error);
@@ -86,18 +87,32 @@ const Marketplace = () => {
     // setNftSearch(nfts1)
   
 
-  },[])
+  },[checkEvent])
+
+  const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
   
   const handleBuyNFT = async (item:any) => {
     try {
+      setLoadingMap(prevLoadingMap => ({
+        ...prevLoadingMap,
+        [item.itemId]: true
+      }));
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
   
       await marketplace.purchaseItem(item.itemId, { value: item.totalPrice });
       loadMarketplaceItems();
+      setLoadingMap(prevLoadingMap => ({
+        ...prevLoadingMap,
+        [item.itemId]: false
+      }));
     } catch (error) {
       console.error("Error buying NFT:", error);
+      setLoadingMap(prevLoadingMap => ({
+        ...prevLoadingMap,
+        [item.itemId]: false
+      }));
     }
   };
   
@@ -152,8 +167,8 @@ const Marketplace = () => {
           nfts.length > 0 && nfts.map((item:any, id) => (
         
             <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key ={id}>
-             <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`}>
-               <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt=""/>
+             <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`} >
+               <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt="" />
              </Link>
            
             <div className={styles.card_body}>
@@ -178,7 +193,8 @@ const Marketplace = () => {
              
              <div>
              <Button onClick={() => handleBuyNFT(item)} style={{background: "#009cf7", color:"#fff", width:"150px"}} >
-             BUY NFT
+            
+             {!loadingMap[item.itemId] ? ('BUY NFT')  :(<><Text style={{marginRight:'4px'}}>BUYING NFT</Text>  <Spinner size='sm'/></>) }
              </Button>
              </div>
             </div>
@@ -194,20 +210,8 @@ const Marketplace = () => {
 
       
     }
-    {/* <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
+    {/*
+      
         <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
           <Image src="/image/2.jpg" alt=""/>
           <div className={styles.card_body}>
@@ -222,90 +226,8 @@ const Marketplace = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}}>
-          <Image src="/image/2.jpg" alt=""/>
-          <div className={styles.card_body}>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}> Pomeranian Doge</Text>
-            <Text style={{fontWeight:"600", color:"#484848"}}><FaRegHeart/></Text>
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <Text style={{fontSize:"14px", color:"#909090", marginBottom:"4px"}}>Reserve Price</Text>
-            <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-          </div>
-            
-        </Card> */}
+      
+    */}
     </div>
     </>
     

@@ -1,6 +1,6 @@
 require("@nomiclabs/hardhat-ethers");
 require('dotenv').config();
-
+require("@nomiclabs/hardhat-etherscan");
 module.exports = {
   defaultNetwork: "bsc",
   networks: {
@@ -20,6 +20,9 @@ module.exports = {
       url: "https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30",
       accounts: [process.env.PRIVATE_KEY]
     }
+  },
+  etherscan:{
+    apiKey:process.env.API_KEY
   },
   solidity: {
     version: "0.8.18",
