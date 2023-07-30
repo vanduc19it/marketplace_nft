@@ -95,7 +95,7 @@ const Navbar = () => {
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader style={{fontWeight:"700"}}>Choose Your Wallet</ModalHeader>
+        <ModalHeader style={{ fontWeight: "700" }}>Choose Your Wallet</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
                 <div className={styles.connect} onClick={handleConnectWallet}>
@@ -203,20 +203,26 @@ const Navbar = () => {
                         address?.length > 0  ? <Image src="/1.jfif" alt="" style={{width:"22px", height:"22px", borderRadius:"50%"}}/> :  <BiUserCircle size={25}/>
                         } 
                     </MenuButton>
-                    <MenuList >
-                    <Link href="/profile" >
-                        <MenuItem style={{fontWeight:"700"}}><HiOutlineUser style={{marginRight:"4px"}} size={18}/>Profile</MenuItem>
-                    </Link>
-                    <Link href="/">
-                        <MenuItem style={{fontWeight:"700"}}><BiCategoryAlt style={{marginRight:"4px"}} size={18}/>My Collections</MenuItem>
-                    </Link>
-                    <Link href="/createNewNFT">
-                        <MenuItem style={{fontWeight:"700"}}><BiPencil style={{marginRight:"4px"}} size={18}/>Create</MenuItem>
-                    </Link>
-                   
-                        <MenuItem style={{fontWeight:"700"}} onClick={handleLogout}><FiLogOut style={{marginRight:"4px"}} size={18} />Log Out</MenuItem>
-                  
-                    </MenuList>
+                    <MenuList>
+                            <Link href="/Profile">
+                                <MenuItem style={{ fontWeight: "700" }}>
+                                <HiOutlineUser style={{ marginRight: "4px" }} size={18} />Profile
+                                </MenuItem>
+                            </Link>
+                            <Link href="/">
+                                <MenuItem style={{ fontWeight: "700" }}>
+                                <BiCategoryAlt style={{ marginRight: "4px" }} size={18} />My Collections
+                                </MenuItem>
+                            </Link>
+                            <Link href="/createNewNFT">
+                                <MenuItem style={{ fontWeight: "700" }}>
+                                <BiPencil style={{ marginRight: "4px" }} size={18} />Create
+                                </MenuItem>
+                            </Link>
+                            <MenuItem style={{ fontWeight: "700" }} onClick={handleLogout}>
+                                <FiLogOut style={{ marginRight: "4px" }} size={18} />Log Out
+                            </MenuItem>
+                            </MenuList>
                 </Menu>
         </div>
         <div>
