@@ -5,12 +5,12 @@ import React, { useContext, useEffect , useState} from 'react'
 import styles from '../styles/profile.module.scss'
 import { FaRegHeart } from "react-icons/fa";
 import {ethers} from 'ethers'
-import MarketplaceAbi from '../pages/datasmc/abi/marketplaceAbi.json';
-import MarketplaceAddress from '../pages/datasmc/address/marketplaceAddress.json';
-import NFTAbi from '../pages/datasmc/abi/nftAbi.json';
-import NFTAddress from '../pages/datasmc/address/nftAddress.json';
-import AuctionAbi from '../pages/datasmc/abi/auctionAbi.json';
-import AuctionAddress from '../pages/datasmc/address/auctionAddress.json';
+import MarketplaceAbi from './datasmc/abi/marketplaceAbi.json';
+import MarketplaceAddress from './datasmc/address/marketplaceAddress.json';
+import NFTAbi from './datasmc/abi/nftAbi.json';
+import NFTAddress from './datasmc/address/nftAddress.json';
+import AuctionAbi from './datasmc/abi/auctionAbi.json';
+import AuctionAddress from './datasmc/address/auctionAddress.json';
 import axios from 'axios';
 declare var window: any;
 import Countdown from 'react-countdown';
@@ -19,15 +19,17 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 
-interface NFT {
-  idToken: number;
-  name: string;
-  image: string;
-  description: string;
-  price: number;
-}
 
-const profile = () => {
+
+const Profile = () => {
+
+  interface NFT {
+    idToken: number;
+    name: string;
+    image: string;
+    description: string;
+    price: number;
+  }
 
   const [nftCollected, setNftCollected] = useState<NFT[]>([]);
   const [market, setMaket] = useState([]);
@@ -546,7 +548,7 @@ console.log(nftAuction)
       {
       market.length > 0 && market.map((item:any, id) => (
          <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key={id}>
-            <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`} >
+            <Link href={`/ProductDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`} >
          <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt=""/>
          </Link>
          <div className={styles.card_body}>
@@ -673,4 +675,4 @@ console.log(nftAuction)
   )
 }
 
-export default profile
+export default Profile
