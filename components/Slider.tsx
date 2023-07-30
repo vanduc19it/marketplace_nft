@@ -26,7 +26,7 @@ const Slider = () => {
     </div>
     <div style={{width:"30vw"}}>
     {/* enableAutoPlay={true} autoPlaySpeed={4000} */}
-     <Carousel breakPoints={breakPoints} itemPadding={[10, 10]} showArrows={false} >
+     <Carousel breakPoints={breakPoints} itemPadding={[10, 10]} showArrows={false}  >
      <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider1.avif" alt="" style={{borderRadius:"20px"}}/>
           <div className={styles.text}>
