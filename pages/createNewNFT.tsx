@@ -31,7 +31,7 @@ import { useNavigate } from 'react-router-dom';
 // });
 
 
-const createNewNFT = () => {
+const CreateNewNFT = () => {
 
 	
 	const { isLoggedIn, handleConnect1} = useContext(SearchContext);
@@ -127,7 +127,7 @@ const createNewNFT = () => {
 				// const uri = `https://ipfs.infura.io/ipfs/${result.path}`
 	
 				// mint nft
-				const tx = await (await nft.mint(ipfsURL)).wait();
+				const tx = await (await nft.mint(ipfsURL)).wait();// taoj nft
 				console.log(tx)
 				if(tx) {
 					setTx(tx?.transactionHash);
@@ -252,4 +252,4 @@ const createNewNFT = () => {
   )
 }
 
-export default createNewNFT
+export default CreateNewNFT

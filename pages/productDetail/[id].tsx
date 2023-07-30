@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar'
 import { Button, Card, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure } from '@chakra-ui/react'
 import React,{useEffect, useState} from 'react'
 import { FaRegHeart } from "react-icons/fa";
-import styles from '../../styles/productdetail.module.scss'
+import styles from '../../styles/productDetail.module.scss'
 import { BsCart4 } from "react-icons/bs";
 import { AiOutlineEye } from 'react-icons/ai';
 import { useRouter } from 'next/router';

@@ -14,7 +14,6 @@ import AuctionAddress from '../pages/datasmc/address/auctionAddress.json';
 import axios from 'axios';
 declare var window: any;
 import Countdown from 'react-countdown';
-import BigNumber from 'bignumber.js'
 import { SearchContext } from '@/components/SearchContext'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
