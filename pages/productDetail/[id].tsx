@@ -3,7 +3,7 @@ import Navbar from '@/components/Navbar'
 import { Button, Card, Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Spinner, Tab, TabList, TabPanel, TabPanels, Tabs, Text, useDisclosure } from '@chakra-ui/react'
 import React,{useEffect, useState} from 'react'
 import { FaRegHeart } from "react-icons/fa";
-import styles from '../../styles/productDetail.module.scss'
+import styles from '../../styles/productdetail.module.scss'
 import { BsCart4 } from "react-icons/bs";
 import { AiOutlineEye } from 'react-icons/ai';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ import MarketplaceAbi from '../../pages/datasmc/abi/marketplaceAbi.json';
 import MarketplaceAddress from '../../pages/datasmc/address/marketplaceAddress.json';
 import Link from 'next/link';
 declare var window: any;
-const productDetail = () => {
+const ProductDetail = () => {
 
   interface NftData {
     name: string;
@@ -232,4 +232,4 @@ const productDetail = () => {
   )
 }
 
-export default productDetail
+export default ProductDetail
