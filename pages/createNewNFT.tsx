@@ -38,15 +38,20 @@ const CreateNewNFT = () => {
   	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 
-
-  if (typeof window !== 'undefined') {
-		const provider: any = new ethers.providers.Web3Provider(window.ethereum);
-
-		const signer: any = provider.getSigner();
-		var nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer);
-		var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
-    console.log(provider)
+	try {
+		
+		if (typeof window !== 'undefined') {
+			const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+	
+			const signer: any = provider.getSigner();
+			var nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer);
+			var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);
+		console.log(provider)
+		}
+	} catch (error) {
+		console.log(error);
 	}
+
 
 
 

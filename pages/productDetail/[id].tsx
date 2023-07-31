@@ -62,7 +62,9 @@ const ProductDetail = () => {
 
     } catch (error) {
       console.error("Error buying NFT:" , error);
+      alert("Có vẻ bạn chưa cài đặt và kết nối ví metamask!")
       setLoading(false)
+
     }
   };
 
