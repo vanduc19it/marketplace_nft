@@ -8,11 +8,8 @@ import { BsCart4 } from "react-icons/bs";
 import { AiOutlineEye } from 'react-icons/ai';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
-import NFTAbi from '../../pages/datasmc/abi/nftAbi.json';
-import NFTAddress from '../../pages/datasmc/address/nftAddress.json';
-import axios from 'axios';
-import MarketplaceAbi from '../../pages/datasmc/abi/marketplaceAbi.json';
-import MarketplaceAddress from '../../pages/datasmc/address/marketplaceAddress.json';
+import MarketplaceAbi from '../datasmc/abi/marketplaceAbi.json';
+import MarketplaceAddress from '../datasmc/address/marketplaceAddress.json';
 import Link from 'next/link';
 declare var window: any;
 const ProductDetail = () => {
@@ -23,7 +20,6 @@ const ProductDetail = () => {
     price: number;
     owner: string;
     description: string;
-    // Các thuộc tính khác của đối tượng nft
   }
   
 
@@ -71,9 +67,8 @@ const ProductDetail = () => {
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-	// const navigate = useNavigate()
+
 	const handleViewTx = () => {
-   
 		router.push(`https://mumbai.polygonscan.com/tx/${tx}`);
 		setTimeout(() => {
 			onClose();
@@ -82,11 +77,8 @@ const ProductDetail = () => {
 	}
   return (
     <>
-
-    
 		<Modal closeOnOverlayClick={true} isOpen={isOpen} onClose={onClose} >
 				<ModalOverlay />
-
 				<ModalContent style={{textAlign:'center'}}>
 				<ModalHeader >CREATE NFT</ModalHeader>
 				<ModalCloseButton />
@@ -103,9 +95,7 @@ const ProductDetail = () => {
    
     <div className={styles.detail}>
         <div className={styles.left}>
-
             <Image src={nft.image.replace("ipfs://", "https://ipfs.io/ipfs/")}  alt="" style={{width:"600px", height:"600px"}}/>
-
         </div>
         <div className={styles.right}>
             <Text style={{fontSize:"34px", fontWeight:"700", marginTop:"10px"}}>{nft.name}</Text>
@@ -117,8 +107,6 @@ const ProductDetail = () => {
               <Text style={{ fontWeight:"500", fontSize:"30px"}}>{nft.price} ETH</Text>
             </div>
             </div>
-          
-            
                 <div style={{margin:"20px 0px 40px"}}>
                 <Button style={{borderRadius:"10px", background:"#2081E2", width:"160px", color:"white"}} onClick={() => handleBuyNFT(nft)}>
                 {!loading ? ('Buy Now')  :(<><Text style={{marginRight:'4px'}}>Buying</Text>  <Spinner size='sm'/></>) }
@@ -153,7 +141,6 @@ const ProductDetail = () => {
     </div>
     <div className=''>
     <div style={{display:"flex", justifyContent:"space-between", alignItems:'center'}}>
-
     
   <div className={styles.heading}>Related Products
     </div>
@@ -221,8 +208,6 @@ const ProductDetail = () => {
           </div>
             
         </Card>
-       
-      
       
     </div>
     </div>

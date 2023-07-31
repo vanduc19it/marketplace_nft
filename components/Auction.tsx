@@ -8,42 +8,51 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const Auction = () => {
 
-
-      const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3, 
-        slidesToScroll: 1, 
-        autoplay: true,
-        autoplaySpeed: 2000,
-        responsive: [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 768,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-            },
-          },
-        ],
-      };
+  var settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 4,
+    initialSlide: 0,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
     
 
     
   return (
     <>
      <div className={styles.heading}>Live Auctions</div>
-     <div>
+     <div > 
      
-     <Slider {...settings}>
-     <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+     <Slider {...settings} >
+      <div>
+      <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
           <Image src="/image/doodle11.png" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Doodle 1</Text>
           <div className={styles.card_body}>
@@ -79,7 +88,10 @@ const Auction = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+      </div>
+     
+     <div>
+     <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px",margin:"10px"}}>
           <Image src="/image/6.jpg" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Monkey 3</Text>
           <div className={styles.card_body}>
@@ -115,7 +127,9 @@ const Auction = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+     </div>
+       <div>
+       <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px",margin:"10px"}}>
           <Image src="/image/3.jpg" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Micraft1</Text>
           <div className={styles.card_body}>
@@ -151,7 +165,10 @@ const Auction = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+       </div>
+
+       <div>
+       <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px",margin:"10px"}}>
           <Image src="/image/phanta1.png" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}> Phanta Bear</Text>
           <div className={styles.card_body}>
@@ -187,7 +204,11 @@ const Auction = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+       </div>
+        
+      
+      <div>
+      <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
           <Image src="/image/coolcat.png" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Cool Cat 3D</Text>
           <div className={styles.card_body}>
@@ -223,6 +244,48 @@ const Auction = () => {
           </div>
             
         </Card>
+      </div>
+        
+        <div>
+        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
+          <Image src="/image/coolcat.png" alt="" style={{borderRadius:"20px"}}/>
+           <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Cool Cat 3D</Text>
+          <div className={styles.card_body}>
+            <div>
+                <Text style={{fontWeight:"600", color:"#000", fontSize:"14px"}}>Highest bid</Text>
+                <Text style={{fontWeight:"600", color:"#484848", fontSize:"13px"}}>0.03 ETH</Text>
+            </div>
+            <div>
+            <Text style={{fontWeight:"600", color:"#000",  fontSize:"14px"}}>Ends in</Text>
+            <Text style={{fontWeight:"600", color:"#484848", fontSize:"13px"}}>09:23:16:34</Text>
+            </div>
+         
+            
+          </div>
+          <hr style={{borderColor:"#eee"}}/>
+          <div className={styles.price}>
+            <div className={styles.info}>
+            <Image src="/image/avata2.avif" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
+            <div>
+                <Text style={{fontSize:"14px", color:"#000", fontWeight:"600"}}>Creator</Text>
+                <Text style={{fontSize:"13px", color:"#222", fontWeight:"600"}}>0xf14...</Text>
+            </div>
+            </div>
+         
+            <div className={styles.info}>
+            <Image src="/image/avata2.avif" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
+            <div>
+                <Text style={{fontSize:"14px", color:"#000", fontWeight:"600"}}>Owner</Text>
+                <Text style={{fontSize:"13px", color:"#222", fontWeight:"600"}}>0xf14...</Text>
+            </div>
+           
+            </div>
+          </div>
+            
+        </Card>
+        </div>
+      
+        
      
           
    </Slider>
