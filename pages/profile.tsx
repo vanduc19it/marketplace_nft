@@ -41,139 +41,144 @@ const Profile = () => {
 
 
     const loadNFT = async () => {
-      if(typeof window !== "undefined") {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-        const provider2:any = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30');
-
-        //get contract of nft 
-        const contract2 = new ethers.Contract(NFTAddress.address, NFTAbi, provider2);
-
-      //get so luong nft trong smc nft
-      const tokenCount = await contract2.tokenCount();
-      
-      //chuyên ve so binh thuong
-      const tokenCount1 = tokenCount.toNumber()
+      try {
+        if(typeof window !== "undefined") {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   
-      //khai bao mang de lưu item da tao
-      var itemNFTArrayCollected: any[] = [];
+          const provider2:any = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.infura.io/v3/4cd2c1a8018646908347fb2223053b30');
   
-
-      for(let i =1; i<=tokenCount1; i++) {
-       
-        const tokenId = i;  // ID của NFT
-      const owner = await contract2.ownerOf(tokenId); // Địa chỉ của chủ sở hữu NFT
-
-      if(owner.toLowerCase() === accounts[0]) {
-        const tokenURI = await contract2.tokenURI(tokenId); // Đường dẫn đến metadata của NFT
-
-        // console.log(`Owner of token ${tokenId}: ${owner}`);
-        console.log(`Token URI of token ${tokenId}: ${tokenURI}`);
-        //get metadata tu uri cua tung nft
-        const response = await axios.get(tokenURI);
-        console.log(response)
+          //get contract of nft 
+          const contract2 = new ethers.Contract(NFTAddress.address, NFTAbi, provider2);
   
-        const { name, image, description, price } = response.data;
-    
-        const newItem: NFT = {
-          idToken: tokenId,
-          name,
-          image,
-          description,
-          price,
-        };
-        itemNFTArrayCollected.push(newItem);
-      
-      }
-      else {
-        console.log("ko trùng owner")
-      }
-     
-
-      }
-      console.log("item2",  itemNFTArrayCollected )
-      localStorage.setItem('nftCollected', JSON.stringify(itemNFTArrayCollected));
-      setCheckEvent(checkEvent + 1)
-     
-      // setNftCollected(prevItems => [...prevItems, ...itemNFTArrayCollected]);
-      // console.log(nftCollected)
-
-      //tab listing 
-      const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, provider2);
-      if (marketplace !== undefined) {
-        const itemCount = await marketplace.itemCount();
-        let items: any = [];
-        for (let i = 1; i <= itemCount; i++) {
-          const item = await marketplace.items(i);
-         
-          if( item?.seller.toLowerCase() == accounts[0].toLowerCase()) {
-            console.log(item.seller, accounts[0])
-                // get uri url from nft contract
-                const uri = await contract2.tokenURI(item.tokenId);
-                // use uri to fetch the nft metadata stored on ipfs
-                const response = await fetch(uri);
-
-                const metadata = await response.json();
-                console.log("metadata", metadata)
-                // get total price of item (item price + fee)
-                const totalPrice = await marketplace.getTotalPrice(item.itemId);
-                // Add item to items array
-                items.push({
-                  totalPrice,
-                  itemId: item.itemId,
-                  seller: item.seller,
-                  name: metadata.name,
-                  description: metadata.description,
-                  image: metadata.image,
-                  price: metadata.price
-                });
-
-          }else {
-              console.log("không trùng owner")
-              console.log(typeof item.seller, typeof accounts[0])
-          }
-          
-        }
-
+        //get so luong nft trong smc nft
+        const tokenCount = await contract2.tokenCount();
         
-        // setMaket(items);
-        localStorage.setItem('nftListing', JSON.stringify(items));
-        setCheckEvent(checkEvent + 1)
-      }
-
-      //purchased
-     
-      const filter =  marketplace.filters.Bought(null,null,null,null,null,accounts[0]);
-      const results = await marketplace.queryFilter(filter)
-
-      const purchases:any = await Promise.all(results.map(async i => {
-        // fetch arguments from each result
-        var a:any = i.args; 
-        // get uri url from nft contract
-        const uri = await contract2.tokenURI(a.tokenId.toNumber())
-        // use uri to fetch the nft metadata stored on ipfs 
-        const response = await fetch(uri)
-        const metadata = await response.json()
-        // get total price of item (item price + fee)
-        const totalPrice = await marketplace.getTotalPrice(a.itemId)
-        // define listed item object
-        let purchasedItem = {
-          totalPrice,
-          price: a.price,
-          itemId: a.itemId,
-          name: metadata.name,
-          description: metadata.description,
-          image: metadata.image
+        //chuyên ve so binh thuong
+        const tokenCount1 = tokenCount.toNumber()
+    
+        //khai bao mang de lưu item da tao
+        var itemNFTArrayCollected: any[] = [];
+    
+  
+        for(let i =1; i<=tokenCount1; i++) {
+         
+          const tokenId = i;  // ID của NFT
+        const owner = await contract2.ownerOf(tokenId); // Địa chỉ của chủ sở hữu NFT
+  
+        if(owner.toLowerCase() === accounts[0]) {
+          const tokenURI = await contract2.tokenURI(tokenId); // Đường dẫn đến metadata của NFT
+  
+          // console.log(`Owner of token ${tokenId}: ${owner}`);
+          console.log(`Token URI of token ${tokenId}: ${tokenURI}`);
+          //get metadata tu uri cua tung nft
+          const response = await axios.get(tokenURI);
+          console.log(response)
+    
+          const { name, image, description, price } = response.data;
+      
+          const newItem: NFT = {
+            idToken: tokenId,
+            name,
+            image,
+            description,
+            price,
+          };
+          itemNFTArrayCollected.push(newItem);
+        
         }
-        return purchasedItem
-      }))
-      // setPurchases(purchases)
-
-      localStorage.setItem('purchases', JSON.stringify(purchases));
-    setCheckEvent(checkEvent + 1)
-
-      //end
-      }  
+        else {
+          console.log("ko trùng owner")
+        }
+       
+  
+        }
+        console.log("item2",  itemNFTArrayCollected )
+        localStorage.setItem('nftCollected', JSON.stringify(itemNFTArrayCollected));
+        setCheckEvent(checkEvent + 1)
+       
+        // setNftCollected(prevItems => [...prevItems, ...itemNFTArrayCollected]);
+        // console.log(nftCollected)
+  
+        //tab listing 
+        const marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, provider2);
+        if (marketplace !== undefined) {
+          const itemCount = await marketplace.itemCount();
+          let items: any = [];
+          for (let i = 1; i <= itemCount; i++) {
+            const item = await marketplace.items(i);
+           
+            if( item?.seller.toLowerCase() == accounts[0].toLowerCase()) {
+              console.log(item.seller, accounts[0])
+                  // get uri url from nft contract
+                  const uri = await contract2.tokenURI(item.tokenId);
+                  // use uri to fetch the nft metadata stored on ipfs
+                  const response = await fetch(uri);
+  
+                  const metadata = await response.json();
+                  console.log("metadata", metadata)
+                  // get total price of item (item price + fee)
+                  const totalPrice = await marketplace.getTotalPrice(item.itemId);
+                  // Add item to items array
+                  items.push({
+                    totalPrice,
+                    itemId: item.itemId,
+                    seller: item.seller,
+                    name: metadata.name,
+                    description: metadata.description,
+                    image: metadata.image,
+                    price: metadata.price
+                  });
+  
+            }else {
+                console.log("không trùng owner")
+                console.log(typeof item.seller, typeof accounts[0])
+            }
+            
+          }
+  
+          
+          // setMaket(items);
+          localStorage.setItem('nftListing', JSON.stringify(items));
+          setCheckEvent(checkEvent + 1)
+        }
+  
+        //purchased
+       
+        const filter =  marketplace.filters.Bought(null,null,null,null,null,accounts[0]);
+        const results = await marketplace.queryFilter(filter)
+  
+        const purchases:any = await Promise.all(results.map(async i => {
+          // fetch arguments from each result
+          var a:any = i.args; 
+          // get uri url from nft contract
+          const uri = await contract2.tokenURI(a.tokenId.toNumber())
+          // use uri to fetch the nft metadata stored on ipfs 
+          const response = await fetch(uri)
+          const metadata = await response.json()
+          // get total price of item (item price + fee)
+          const totalPrice = await marketplace.getTotalPrice(a.itemId)
+          // define listed item object
+          let purchasedItem = {
+            totalPrice,
+            price: a.price,
+            itemId: a.itemId,
+            name: metadata.name,
+            description: metadata.description,
+            image: metadata.image
+          }
+          return purchasedItem
+        }))
+        // setPurchases(purchases)
+  
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+      setCheckEvent(checkEvent + 1)
+  
+        //end
+        }  
+      } catch (error) {
+        console.log(error)
+      }
+     
     }  
     
     loadNFT();
@@ -215,14 +220,18 @@ const { isLoggedIn, handleConnect1} = useContext(SearchContext);
 	
 const [address, setAddress] = useState('')
 	useEffect(() => {
+    try {
+      
+      const addressData:any = localStorage.getItem('address');
+      setAddress(addressData)
 
-		const addressData:any = localStorage.getItem('address');
-    setAddress(addressData)
-
-		if(addressData?.length > 0) {
-			handleConnect1(true)
-		}
-		console.log(isLoggedIn)
+      if(addressData?.length > 0) {
+        handleConnect1(true)
+      }
+      console.log(isLoggedIn)
+    } catch (error) {
+      console.log(error)
+    }
 
 	  }, [isLoggedIn]);
 
@@ -460,7 +469,7 @@ console.log(nftAuction)
         <Text style={{fontSize:"24px", fontWeight:"600", marginBottom:"4px"}}>Vanduc19it</Text>
         <div style={{display: "flex"}}>
         <Image className={styles.nft_img} src="/eth1.png" alt=""  style={{height:"20px", marginLeft:"-4px"}}/>
-        <Text style={{color:"#484848", marginRight:"10px"}}>{address.substring(0, 6) + "..." + address.substring(38)}</Text>
+        <Text style={{color:"#484848", marginRight:"10px"}}>{address?.substring(0, 6) + "..." + address?.substring(38)}</Text>
         <Text style={{color:"#6d6d6d"}}>Joined February 2023</Text>
         </div>
         <Tabs>

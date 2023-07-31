@@ -41,7 +41,8 @@ const Navbar = () => {
         handleConnect1(true);
         console.log(isLoggedIn);
         } catch (error) {
-         console.log(error)   
+         console.log(error)  
+         alert("Vui lòng cài đặt ví metamask và kết nối để tiếp tục!") 
         }   
         
       }
