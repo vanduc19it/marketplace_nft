@@ -1,23 +1,48 @@
 import { Card, Image, Text } from '@chakra-ui/react';
 import React from 'react'
 import styles from "../styles/auction.module.scss"
-import Carousel from "react-elastic-carousel";
+
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const Auction = () => {
 
-    const breakPoints = [
-        { width: 1, itemsToShow: 1 },
-        { width: 550, itemsToShow: 1, itemsToScroll: 2 },
-        { width: 768, itemsToShow: 3 },
-        { width: 1200, itemsToShow: 5 }
-      ];
+
+      const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3, 
+        slidesToScroll: 1, 
+        autoplay: true,
+        autoplaySpeed: 2000,
+        responsive: [
+          {
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+        ],
+      };
+    
 
     
   return (
     <>
      <div className={styles.heading}>Live Auctions</div>
      <div>
-     <Carousel breakPoints={breakPoints} itemPadding={[10, 15]} showArrows={false}>
+     
+     <Slider {...settings}>
      <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
           <Image src="/image/doodle11.png" alt="" style={{borderRadius:"20px"}}/>
            <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}>Doodle 1</Text>
@@ -198,80 +223,9 @@ const Auction = () => {
           </div>
             
         </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
-          <Image src="/image/2.jpg" alt="" style={{borderRadius:"20px"}}/>
-           <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}> Pomeranian Doge</Text>
-          <div className={styles.card_body}>
-            <div>
-                <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Highest bid</Text>
-                <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Ends in</Text>
-            </div>
-            <div>
-            <Text style={{fontWeight:"600", color:"#484848",  fontSize:"14px"}}>Highest bid</Text>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Ends in</Text>
-            </div>
-         
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <div className={styles.info}>
-            <Image src="/image/2.jpg" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
-            <div>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-            </div>
-            </div>
-         
-            <div className={styles.info}>
-            <Image src="/image/2.jpg" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
-            <div>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-            </div>
-           
-            </div>
-          </div>
-            
-        </Card>
-        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
-          <Image src="/image/2.jpg" alt="" style={{borderRadius:"20px"}}/>
-           <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px", marginTop:"15px"}}> Pomeranian Doge</Text>
-          <div className={styles.card_body}>
-            <div>
-                <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Highest bid</Text>
-                <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Ends in</Text>
-            </div>
-            <div>
-            <Text style={{fontWeight:"600", color:"#484848",  fontSize:"14px"}}>Highest bid</Text>
-            <Text style={{fontWeight:"600", color:"#484848", fontSize:"14px"}}>Ends in</Text>
-            </div>
-         
-            
-          </div>
-          <hr style={{borderColor:"#eee"}}/>
-          <div className={styles.price}>
-            <div className={styles.info}>
-            <Image src="/image/2.jpg" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
-            <div>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-            </div>
-            </div>
-         
-            <div className={styles.info}>
-            <Image src="/image/2.jpg" alt="" width={8} style={{borderRadius:"50%", marginRight:"6px"}}/>
-            <div>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-                <Text style={{fontSize:"14px", color:"#222", fontWeight:"600"}}>£6.00</Text>
-            </div>
-           
-            </div>
-          </div>
-            
-        </Card>
+     
           
-            </Carousel>
+   </Slider>
      </div>
             
     </>
