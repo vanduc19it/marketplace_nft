@@ -1,8 +1,8 @@
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
-import { Button, Card, FormControl, FormHelperText, FormLabel, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Spinner, Text, Textarea, useDisclosure } from '@chakra-ui/react'
+import { Button, Card, FormControl, FormLabel, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Spinner, Text, Textarea, useDisclosure } from '@chakra-ui/react'
 import React, { useEffect, useState,useContext } from 'react'
-import {ethers, providers} from 'ethers'
+import {ethers} from 'ethers'
 import { NFTStorage, File } from 'nft.storage';
 declare var window: any;
 import styles from '../styles/createNFT.module.scss'
@@ -13,22 +13,7 @@ import NFTAddress from './datasmc/address/nftAddress.json';
 import { FaRegHeart } from 'react-icons/fa'
 import { SearchContext } from '@/components/SearchContext'
 import { useRouter } from 'next/router'
-import { useNavigate } from 'react-router-dom';
-// import ipfsClient from 'ipfs-http-client';
-// import { Buffer } from 'buffer';
-// const projectId = '4cd2c1a8018646908347fb2223053b30';
-// const projectSecret = '8f714e35d70742d78cab98b27a934f4f';
-// const auth =
-//     'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
-// const client = ipfsClient.create({
-//     host: 'ipfs.infura.io',
-//     port: 5001,
-//     protocol: 'https',
-//     headers: {
-//         authorization: auth,
-//     },
-// });
 
 
 const CreateNewNFT = () => {
@@ -50,7 +35,7 @@ const CreateNewNFT = () => {
   
 	const [image, setImage] = useState('');
 	const [price, setPrice] = useState<number>(0);
-  const [name, setName] = useState('');
+  	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 
 
@@ -78,15 +63,7 @@ const CreateNewNFT = () => {
 			setImageBuffer(reader.result);
 		};
 
-		// if (typeof file !== 'undefined') {
-		// 	try {
-		// 	  const result = await client.add(file)
-		// 	  console.log(result)
-		// 	  setImage(`https://ipfs.infura.io/ipfs/${result.path}`)
-		// 	} catch (error){
-		// 	  console.log("ipfs image upload error: ", error)
-		// 	}
-		//   }
+	
 	};
   console.log(imageBuffer)
 
@@ -216,7 +193,6 @@ const CreateNewNFT = () => {
             <Button
             mt={8}
             colorScheme='teal'
-            // isLoading={props.isSubmitting}
             type='submit'
             onClick={createNFT}
           >

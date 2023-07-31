@@ -40,7 +40,7 @@ const Slider1 = () => {
         <Text>Buy, sell, and discover exclusive digital assets.</Text>
         <div>
             <Button className={styles.btn} style={{background:"white", width:"150px"}}>Explore</Button>
-            <Link href='/createNewNFT'>
+            <Link href='/CreateNewNFT'>
             <Button className={styles.btn} style={{background:"#3a9bfc", width:"150px", color:"white"}} >Create</Button>
             </Link>
             
@@ -49,14 +49,18 @@ const Slider1 = () => {
     <div style={{width:"30vw"}}>
     
     <Slider {...settings}>
-     <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
+      <div>
+      <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider1.avif" alt="" style={{borderRadius:"20px", width:"430px"}}/>
           <div className={styles.text}>
           <Text style={{fontWeight:"600", color:"white", fontSize:"16px"}}>InfiniGods - The Elder Gods</Text>
           <Text style={{fontWeight:"600", color:"white", fontSize:"14px"}}>Floor: 0.07 ETH</Text>
           </div>
         </Card>
-        <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
+       
+      </div>
+      <div>
+      <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider6.avif" alt="" style={{borderRadius:"20px", width:"430px"}}/>
           <div className={styles.text}>
           <Text style={{fontWeight:"600", color:"white", fontSize:"16px"}}>The Sad Cats</Text>
@@ -64,17 +68,22 @@ const Slider1 = () => {
           </div>
          
         </Card>
-        <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
+       
+      </div>
+
+      <div>
+      <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider4.webp" alt="" style={{borderRadius:"20px", width:"430px"}}/>
           <div className={styles.text}>
           <Text style={{fontWeight:"600", color:"white", fontSize:"16px"}}>The HUGG Pass</Text>
           <Text style={{fontWeight:"600", color:"white", fontSize:"14px"}}>Floor: 0.8 ETH</Text>
           </div>
          
-          
-         
         </Card>
-        <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
+      </div>
+    
+    <div>
+    <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider3.avif" alt="" style={{borderRadius:"20px", width:"430px"}}/>
           <div className={styles.text}>
           <Text style={{fontWeight:"600", color:"white", fontSize:"16px"}}>Schmryptozoa</Text>
@@ -83,7 +92,10 @@ const Slider1 = () => {
           
          
         </Card>
-        <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
+       
+    </div>
+    <div>
+    <Card className={styles.card} style={{ borderRadius:"20px", width:"30vw"}}>
           <Image src="/image/slider4.avif" alt="" style={{borderRadius:"20px", width:"430px"}}/>
           <div className={styles.text}>
           <Text style={{fontWeight:"600", color:"white", fontSize:"16px"}}>Genesis Box</Text>
@@ -92,6 +104,8 @@ const Slider1 = () => {
           
          
         </Card>
+    </div>
+       
         
       </Slider>
      </div>

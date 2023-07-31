@@ -243,7 +243,7 @@ const [address, setAddress] = useState('')
       }));
 
      
-      const provider: any = new ethers.providers.Web3Provider(window.ethereum);
+    const provider: any = new ethers.providers.Web3Provider(window.ethereum);
     const signer: any = provider.getSigner();
     var nft = new ethers.Contract(NFTAddress.address, NFTAbi, signer);
     var marketplace = new ethers.Contract(MarketplaceAddress.address, MarketplaceAbi, signer);

@@ -12,9 +12,9 @@
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
   grid-gap: 26px; 
-  margin: 40px 28px;
+  margin: 40px 28px 0px;
 }
 .card {
   width: 310px;

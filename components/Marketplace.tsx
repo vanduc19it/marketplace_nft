@@ -167,12 +167,12 @@ const Marketplace = () => {
           nfts.length > 0 && nfts.map((item:any, id) => (
         
             <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"2px"}} key ={id}>
-             <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`} >
+             <Link href={`/ProductDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`} >
                <Image src={item.image.replace("ipfs://", "https://ipfs.io/ipfs/")} alt="" />
              </Link>
            
             <div className={styles.card_body}>
-              <Link href={`/productDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`}>
+              <Link href={`/ProductDetail/${ethers.BigNumber.from(item.itemId).toNumber()}`}>
                <Text style={{fontWeight:"600", color:"#484848", fontSize:"18px"}}>{item.name}</Text>
                </Link>
              

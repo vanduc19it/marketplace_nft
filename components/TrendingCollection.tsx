@@ -1,20 +1,50 @@
 import { Button, Card, Image, Text } from '@chakra-ui/react'
 import React from 'react'
 import styles from "../styles/trendingcollection.module.scss"
-import Carousel from "react-elastic-carousel";
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 const TrendingCollection = () => {
-    const breakPoints = [
-        { width: 1, itemsToShow: 1 },
-        { width: 550, itemsToShow: 1, itemsToScroll: 2 },
-        { width: 768, itemsToShow: 3 },
-        { width: 1200, itemsToShow: 4 }
-      ];
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 2000,
+        responsive: [
+          {
+            breakpoint: 550,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 3,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 1200,
+            settings: {
+              slidesToShow: 4,
+              slidesToScroll: 1,
+            },
+          },
+        ],
+        arrows: true, 
+      };
   return (
     <>
     <div className={styles.heading}>Trending Collection</div>
     <div className={styles.carousel}>
-    <Carousel breakPoints={breakPoints} itemPadding={[10, 10]}  disableArrowsOnEnd={false}>
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+    <Slider {...settings}>
+        <div>
+        <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
         <div className={styles.card_container}>
         <Image src="/image/doodle4.avif" alt="" style={{width:"155px", height:"105px",}}/>
         <Image src="/image/doodle1.avif" alt="" style={{width:"155px", height:"105px",}}/>
@@ -35,7 +65,10 @@ const TrendingCollection = () => {
        </div>
            
     </Card>
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+        </div>
+    
+    <div>
+    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
         <div className={styles.card_container}>
         <Image src="/image/collection5.png" alt="" style={{width:"155px", height:"105px",}}/>
         <Image src="/image/collection6.png" alt="" style={{width:"155px", height:"105px",}}/>
@@ -56,7 +89,9 @@ const TrendingCollection = () => {
        </div>
            
     </Card>
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+    </div>
+   <div>
+   <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
         <div className={styles.card_container}>
         <Image src="/image/bear1.png" alt="" style={{width:"155px", height:"105px",}}/>
         <Image src="/image/bear4.png" alt="" style={{width:"155px", height:"105px",}}/>
@@ -77,7 +112,10 @@ const TrendingCollection = () => {
        </div>
            
     </Card>
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+   </div>
+    
+    <div>
+    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
         <div className={styles.card_container}>
         <Image src="/image/nakamigo1.avif" alt="" style={{width:"155px", height:"105px",}}/>
         <Image src="/image/nakamigo3.avif" alt="" style={{width:"155px", height:"105px",}}/>
@@ -98,7 +136,10 @@ const TrendingCollection = () => {
        </div>
            
     </Card>
-    <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px"}}>
+    </div>
+   
+   <div>
+   <Card className={styles.card} style={{boxShadow:"0 0 25px rgba(0, 0, 0, 0.1)", borderRadius:"20px", margin:"10px"}}>
         <div className={styles.card_container}>
         <Image src="/image/fox1.png" alt="" style={{width:"155px", height:"105px",}}/>
         <Image src="/image/fox2.png" alt="" style={{width:"155px", height:"105px",}}/>
@@ -119,9 +160,9 @@ const TrendingCollection = () => {
        </div>
            
     </Card>
-
-         
-           </Carousel>
+   </div>
+   
+</Slider>
     </div>
    
     </>
