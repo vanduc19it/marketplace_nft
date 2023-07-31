@@ -204,7 +204,7 @@ const Navbar = () => {
                         } 
                     </MenuButton>
                     <MenuList>
-                            <Link href="/Profile">
+                            <Link href="/profile">
                                 <MenuItem style={{ fontWeight: "700" }}>
                                 <HiOutlineUser style={{ marginRight: "4px" }} size={18} />Profile
                                 </MenuItem>
@@ -214,7 +214,7 @@ const Navbar = () => {
                                 <BiCategoryAlt style={{ marginRight: "4px" }} size={18} />My Collections
                                 </MenuItem>
                             </Link>
-                            <Link href="/CreateNewNFT">
+                            <Link href="/createNewNFT">
                                 <MenuItem style={{ fontWeight: "700" }}>
                                 <BiPencil style={{ marginRight: "4px" }} size={18} />Create
                                 </MenuItem>

@@ -40,7 +40,7 @@ const Slider1 = () => {
         <Text>Buy, sell, and discover exclusive digital assets.</Text>
         <div>
             <Button className={styles.btn} style={{background:"white", width:"150px"}}>Explore</Button>
-            <Link href='/CreateNewNFT'>
+            <Link href='/createNewNFT'>
             <Button className={styles.btn} style={{background:"#3a9bfc", width:"150px", color:"white"}} >Create</Button>
             </Link>
             
