@@ -161,7 +161,7 @@ const Navbar = () => {
                         
                     <div>
                     <Link  style={{fontWeight:"600", fontSize:"18px"}} href="/">Ranking</Link>
-                        <ScaleFade initialScale={0.9} in={isOpen} style={{position:"absolute"}}>
+                        {/* <ScaleFade initialScale={0.9} in={isOpen} style={{position:"absolute"}}>
                             <Box
                             p='40px'
                             color='white'
@@ -172,7 +172,7 @@ const Navbar = () => {
                             >
                             Fade
                             </Box>
-                        </ScaleFade>
+                        </ScaleFade> */}
                     </div>
         </div>
        
